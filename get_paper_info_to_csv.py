@@ -12,9 +12,9 @@ from bs4 import BeautifulSoup
 import time
 
 
-def get_total_results(url, headers, params):
+def get_total_results(url, headers, params, proxies):
     """一共多少篇文章"""
-    response = requests.get(url, headers=headers, params=params)
+    response = requests.get(url, headers=headers, params=params, proxies=proxies)
     tree = html.fromstring(response.content)
     result_string = ''.join(tree.xpath('//*[@id="main-container"]/div[1]/div[1]/h1/text()')).strip()
     match = re.search(r'of ([\d,]+) results', result_string)
@@ -26,9 +26,9 @@ def get_total_results(url, headers, params):
         return 0
 
 
-def get_paper_info(url, headers, params):
+def get_paper_info(url, headers, params, proxies):
     """根据URL爬取一页的论文信息"""
-    response = requests.get(url, headers=headers, params=params)
+    response = requests.get(url, headers=headers, params=params, proxies=proxies)
     soup = BeautifulSoup(response.content, 'html.parser')
     papers = []
 
@@ -65,7 +65,7 @@ def save_to_csv(papers, filename):
             writer.writerow(paper)
 
 
-def papers_info_core(keywords, page_size):
+def papers_info_core(keywords, page_size, proxies_port):
     # 修改这里的链接
     base_url = "https://arxiv.org/search/"
     base_params = {
@@ -79,7 +79,16 @@ def papers_info_core(keywords, page_size):
     base_headers = {
         "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
     }
-    total_results = get_total_results(base_url, base_headers, base_params)
+    # 设置本地代理
+    if proxies_port is not None:
+        proxies = {
+            "http": f"http://127.0.0.1:{proxies_port}",
+            "https": f"http://127.0.0.1:{proxies_port}"
+        }
+    else:
+        proxies = None
+
+    total_results = get_total_results(base_url, base_headers, base_params, proxies)
     pages = math.ceil(total_results / page_size)
     all_papers = []
 
@@ -87,7 +96,7 @@ def papers_info_core(keywords, page_size):
         start = page * page_size
         print(f"Crawling page {page + 1}/{pages}, start={start}")
         base_params["start"] = start    # 将参数中的start更改
-        all_papers.extend(get_paper_info(base_url, base_headers, base_params))
+        all_papers.extend(get_paper_info(base_url, base_headers, base_params, proxies))
         time.sleep(3)  # 等待三秒以避免对服务器造成过大压力
 
     # 保存到CSV
@@ -96,5 +105,5 @@ def papers_info_core(keywords, page_size):
 
 
 if __name__ == '__main__':
-    papers_info_core(keywords="text spotter", page_size=200)
+    papers_info_core(keywords="text spotter", page_size=200, proxies_port=10808)
 

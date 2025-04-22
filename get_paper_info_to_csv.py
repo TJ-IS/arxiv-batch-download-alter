@@ -20,9 +20,11 @@ def get_total_results(url, headers, params, proxies):
     match = re.search(r'of ([\d,]+) results', result_string)
     if match:
         total_results = int(match.group(1).replace(',', ''))
+        print("检查到文章数量：", total_results, "篇！")
+        input("是否开始爬取文章信息？回车就是开始~")
         return total_results
     else:
-        print("没有找到匹配的数字。")
+        print("文章数匹配失效！")
         return 0
 
 
@@ -66,7 +68,12 @@ def save_to_csv(papers, filename):
 
 
 def papers_info_core(keywords, searchtype, page_size, proxies_port):
-    # 修改这里的链接
+    # 设置本地代理
+    proxies = {
+        "http": f"http://127.0.0.1:{proxies_port}",
+        "https": f"http://127.0.0.1:{proxies_port}"
+    } if proxies_port is not None else None
+
     base_url = "https://arxiv.org/search/"
     base_params = {
         "query": keywords,    # 关键词
@@ -79,14 +86,6 @@ def papers_info_core(keywords, searchtype, page_size, proxies_port):
     base_headers = {
         "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
     }
-    # 设置本地代理
-    if proxies_port is not None:
-        proxies = {
-            "http": f"http://127.0.0.1:{proxies_port}",
-            "https": f"http://127.0.0.1:{proxies_port}"
-        }
-    else:
-        proxies = None
 
     total_results = get_total_results(base_url, base_headers, base_params, proxies)
     pages = math.ceil(total_results / page_size)
@@ -97,7 +96,7 @@ def papers_info_core(keywords, searchtype, page_size, proxies_port):
         print(f"Crawling page {page + 1}/{pages}, start={start}")
         base_params["start"] = start    # 将参数中的start更改
         all_papers.extend(get_paper_info(base_url, base_headers, base_params, proxies))
-        time.sleep(3)  # 等待三秒以避免对服务器造成过大压力
+        time.sleep(1)  # 等待1秒以避免对服务器造成过大压力
 
     # 保存到CSV
     save_to_csv(all_papers, 'paper_result.csv')

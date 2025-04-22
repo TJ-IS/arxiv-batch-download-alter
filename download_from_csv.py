@@ -5,8 +5,9 @@ import requests
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 import re
-from tqdm import tqdm  # 引入进度条
+from tqdm import tqdm
 import queue
+
 
 # 清理非法文件名字符
 def sanitize_filename(title):
@@ -27,7 +28,6 @@ def download_paper(row, year_folders, proxies, output_queue):
             response.raise_for_status()
             with open(file_path, 'wb') as f:
                 f.write(response.content)
-            # print(f"Downloaded: {file_path}")
         else:
             output_queue.put(f"No PDF, skipping: 【{title}】 -> {pdf_url}")
     except Exception as e:
@@ -35,43 +35,50 @@ def download_paper(row, year_folders, proxies, output_queue):
 
 
 def papers_file_core(path_of_csv, proxies_port=None, max_workers=3):
+    # 设置本地代理
+    proxies = {
+        "http": f"http://127.0.0.1:{proxies_port}",
+        "https": f"http://127.0.0.1:{proxies_port}"
+    } if proxies_port is not None else None
+
     # 读取CSV文件
     df = pd.read_csv(path_of_csv)
-
-    # 提取年份
     df['year'] = pd.to_datetime(df['submission_date']).dt.year
+
+    # 输出所有年份及论文数
+    year_counts = df['year'].value_counts().sort_index()
+    print("可选年份及对应论文数量：")
+    for year, count in year_counts.items():
+        print(f" - {year}: {count} 篇")
+
+    # 用户选择年份
+    year_input = input("\n请输入要下载的年份（多个年份用逗号分隔，例如 2022,2023）：")
+    selected_years = [int(y.strip()) for y in year_input.split(",") if y.strip().isdigit()]
+    df = df[df['year'].isin(selected_years)]
+
+    if df.empty:
+        print("没有符合条件的论文，程序结束。")
+        return
 
     # 创建以年份命名的文件夹
     base_dir = "papers_by_year"
     os.makedirs(base_dir, exist_ok=True)
-
     year_folders = {}
     for year in df['year'].unique():
         year_folder = os.path.join(base_dir, str(year))
         os.makedirs(year_folder, exist_ok=True)
         year_folders[year] = year_folder
 
-    # 设置本地代理
-    if proxies_port is not None:
-        proxies = {
-            "http": f"http://127.0.0.1:{proxies_port}",
-            "https": f"http://127.0.0.1:{proxies_port}"
-        }
-    else:
-        proxies = None
-
-    # 创建一个线程安全的队列
+    # 创建线程安全输出队列
     output_queue = queue.Queue()
 
-    # 使用线程池下载并添加进度条
+    # 并发下载
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        # 使用 executor 添加任务到 futures
         futures = [executor.submit(download_paper, row, year_folders, proxies, output_queue) for _, row in df.iterrows()]
-        # 添加进度条，便于检测下载进度
-        for future in tqdm(futures, desc="Downloading papers", mininterval=0.1, maxinterval=60, ncols=150, total=len(futures)):
-            future.result()  # 等待所有任务完成
+        for future in tqdm(futures, desc="Downloading papers", mininterval=0.1, ncols=150, total=len(futures)):
+            future.result()
 
-    # 在所有任务完成后，统一输出文本
+    # 下载后统一输出日志
     while not output_queue.empty():
         print(output_queue.get())
 

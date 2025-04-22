@@ -18,5 +18,5 @@ if __name__ == '__main__':
         proxies_port: 使用代理端口，不填则使用临时本地端口【网速慢可挂VPN后修改为对应端口】
         max_workers: 线程池中的线程数【与本地网速有关，默认为3】
     """
-    papers_info_core(keywords="text spotter", searchtype="all", page_size=200, proxies_port=10808)
+    papers_info_core(keywords="scene text spotter", searchtype="abstract", page_size=200, proxies_port=10808)
     papers_file_core(path_of_csv="paper_result.csv", proxies_port=10808, max_workers=10)

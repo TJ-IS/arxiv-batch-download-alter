@@ -20,7 +20,7 @@ def get_total_results(url, headers, params, proxies):
     match = re.search(r'of ([\d,]+) results', result_string)
     if match:
         total_results = int(match.group(1).replace(',', ''))
-        print("检查到文章数量：", total_results, "篇！")
+        print("检查到文章数量: ", total_results, "篇！")
         input("是否开始爬取文章信息？回车就是开始~")
         return total_results
     else:
@@ -73,6 +73,8 @@ def papers_info_core(keywords, searchtype, page_size, proxies_port):
         "http": f"http://127.0.0.1:{proxies_port}",
         "https": f"http://127.0.0.1:{proxies_port}"
     } if proxies_port is not None else None
+
+    print(f"搜索关键词: {keywords}")
 
     base_url = "https://arxiv.org/search/"
     base_params = {

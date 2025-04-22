@@ -65,12 +65,12 @@ def save_to_csv(papers, filename):
             writer.writerow(paper)
 
 
-def papers_info_core(keywords, page_size, proxies_port):
+def papers_info_core(keywords, searchtype, page_size, proxies_port):
     # 修改这里的链接
     base_url = "https://arxiv.org/search/"
     base_params = {
         "query": keywords,    # 关键词
-        "searchtype": "all",
+        "searchtype": searchtype,
         "abstracts": "show",
         "order": "-announced_date_first",
         "size": str(page_size),
@@ -105,5 +105,5 @@ def papers_info_core(keywords, page_size, proxies_port):
 
 
 if __name__ == '__main__':
-    papers_info_core(keywords="text spotter", page_size=200, proxies_port=10808)
+    papers_info_core(keywords="text spotter", searchtype="all", page_size=200, proxies_port=10808)
 

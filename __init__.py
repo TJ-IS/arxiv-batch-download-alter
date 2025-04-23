@@ -20,4 +20,4 @@ if __name__ == '__main__':
     """
     print("你好！欢迎使用arxiv文献下载器")
     papers_info_core(keywords="scene text spotter", searchtype="abstract", page_size=200, proxies_port=10808)
-    papers_file_core(path_of_csv="paper_result.csv", proxies_port=10808, max_workers=10)
+    papers_file_core(path_of_csv="paper_result.csv", proxies_port=10808, max_workers=3)

@@ -29,9 +29,9 @@ def download_paper(row, year_folders, proxies, output_queue):
             with open(file_path, 'wb') as f:
                 f.write(response.content)
         else:
-            output_queue.put(f"No PDF, skipping: 【{title}】 -> {pdf_url}")
+            output_queue.put(f"No PDF, skipping: 《{title}》 -> 【{pdf_url}】")
     except Exception as e:
-        output_queue.put(f"Failed to download {title} {pdf_url}: {e}")
+        output_queue.put(f"Failed to download 《{title}》 -> 【{pdf_url}】: {e}")
 
 
 def papers_file_core(path_of_csv, proxies_port=None, max_workers=3):

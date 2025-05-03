@@ -107,4 +107,3 @@ def papers_info_core(keywords, searchtype, page_size, proxies_port):
 
 if __name__ == '__main__':
     papers_info_core(keywords="text spotter", searchtype="all", page_size=200, proxies_port=10808)
-

@@ -11,7 +11,7 @@ def filter_comments(file_path, save_path=None):
         × 后面不能跟 pages/figures
         × 不能只出现在 arxiv 引用中（如 arxiv:2310.12345）
     """
-    df_all = pd.read_csv(file_path)
+    df_all = pd.read_csv(file_path, encoding = 'utf-8')
     df_all['comment'] = df_all['comment'].astype(str).str.lower()
 
     # 条件1：包含 accept / publish / appear
@@ -50,7 +50,7 @@ def filter_comments(file_path, save_path=None):
     df_filtered = df_all[condition1 | condition2]
 
     if save_path:
-        df_filtered.to_csv(save_path, index=False)
+        df_filtered.to_csv(save_path, index=False, encoding='utf-8')
 
     return df_filtered
 

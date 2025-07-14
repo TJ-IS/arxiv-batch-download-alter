@@ -45,6 +45,16 @@ def get_paper_info(url, headers, params, proxies):
         submitted_element = article.find('p', class_='is-size-7').text.strip().split(';')[0].replace('Submitted', '').strip()
         submission_date = datetime.strptime(submitted_element, "%d %B, %Y").strftime("%Y-%m-%d")
 
+        # 1. 先尝试查找元素
+        comment_element = article.find('p', class_='comments is-size-7')
+        # 2. 判断元素是否存在
+        if comment_element:
+            # 如果存在，则提取 text 内容
+            comment = comment_element.text.strip()
+        else:
+            # 如果不存在，则赋予一个默认值
+            comment = ''  # 或者 'No comment found'
+
         pdf_link_element = article.find('a', string='pdf')
         pdf_link = pdf_link_element['href'] if pdf_link_element else 'No PDF link found'
 
@@ -52,6 +62,7 @@ def get_paper_info(url, headers, params, proxies):
                        'authors': authors,
                        'abstract': abstract,
                        'submission_date': submission_date,
+                       'comment': comment,
                        'pdf_link': pdf_link})
 
     return papers
@@ -60,7 +71,7 @@ def get_paper_info(url, headers, params, proxies):
 def save_to_csv(papers, filename):
     """将所有爬取的论文信息保存到CSV文件中"""
     with open(filename, 'w', newline='', encoding='utf-8') as csvfile:
-        fieldnames = ['title', 'authors', 'abstract', 'submission_date', 'pdf_link']
+        fieldnames = ['title', 'authors', 'abstract', 'submission_date','comment', 'pdf_link']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
         for paper in papers:
@@ -98,7 +109,7 @@ def papers_info_core(keywords, searchtype, page_size, proxies_port):
         print(f"Crawling page {page + 1}/{pages}, start={start}")
         base_params["start"] = start    # 将参数中的start更改
         all_papers.extend(get_paper_info(base_url, base_headers, base_params, proxies))
-        time.sleep(1)  # 等待1秒以避免对服务器造成过大压力
+        time.sleep(10)  # 等待1秒以避免对服务器造成过大压力
 
     # 保存到CSV
     save_to_csv(all_papers, 'paper_result.csv')

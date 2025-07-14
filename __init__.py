@@ -19,6 +19,7 @@ if __name__ == '__main__':
         max_workers: 线程池中的线程数【与本地网速有关，默认为3】
     """
     print("你好！欢迎使用arxiv文献下载器")
-    # papers_info_core(keywords="scene text spotter", searchtype="abstract", page_size=200, proxies_port=10808)
-    papers_info_core(keywords="ocr", searchtype="abstract", page_size=200, proxies_port=10808)
-    papers_file_core(path_of_csv="paper_result.csv", proxies_port=10808, max_workers=10)
+
+    papers_info_core(keywords="empirical AND \"large language model\"", searchtype="abstract", page_size=50, proxies_port=None)
+    # RECOMMEND: generate no column. uv run rename.py
+    papers_file_core(path_of_csv="paper_result_no.csv", proxies_port=None, max_workers=3, start_from_no=2301)

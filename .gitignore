@@ -1,8 +1,6 @@
 download_pdfs/
 others/
-paper_result.csv
-paper_result_no.csv
-paper_result_no_filter.csv
+/*.csv
 
 # 缓存
 __pycache__/

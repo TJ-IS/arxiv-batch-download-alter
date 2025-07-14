@@ -1,5 +1,7 @@
 ### arxiv网站关键词论文下载脚本
-改编自https://github.com/HuiXiaHeYu/arxiv-batch-download.增加了基于编号续传和对comment进行筛选.
+改编自https://github.com/HuiXiaHeYu/arxiv-batch-download.
+
+增加了基于编号续传和对comment进行筛选.
 
 > arxiv官网：https://arxiv.org/search/
 

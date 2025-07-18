@@ -1,6 +1,9 @@
 downloaded_pdfs/
+selected_pdfs/
 others/
 /*.csv
+/*.html
+/get_paper_info_to_csv_informs.py
 
 # 缓存
 __pycache__/

@@ -13,6 +13,23 @@
 - proxies_port: 使用代理端口，不填则使用临时本地端口【网速慢可修改为对应端口】
 - max_workers: 线程池中的线程数【与本地网速有关，默认为3】
 
+
+## 🛠️ 安装要求
+
+- Python 3.12 或更高版本
+- [uv](https://github.com/astral-sh/uv) 包管理工具
+
+> 
+> ## On Windows.
+> powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+> 
+
+## 使用 uv 创建虚拟环境并安装依赖
+```bash
+uv venv .venv
+uv sync
+```
+
 **开始使用**
 ```python
 uv sync

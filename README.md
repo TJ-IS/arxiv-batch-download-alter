@@ -62,9 +62,13 @@ uv run filter.py
 
 **其他功能**
 
-EBSCOpdf下载，指定EBSCO元数据csv文件夹，指定输出文件夹，配置edge访问权限即可
+EBSCOpdf下载，指定EBSCO元数据csv文件夹，指定输出文件夹 (默认为根目录下pdfs)，配置edge访问权限 (能够访问EBSCO)即可.
+
+指定csv文件夹时，允许子文件夹中存放csv文件
 
 环境变量需要有msedgedriver.exe所在位置
+
+启动时edge不能有其他页面
 
 ```python
 uv run EBSCO_getpdf.py

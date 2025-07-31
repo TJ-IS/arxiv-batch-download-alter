@@ -4,6 +4,8 @@ others/
 /*.csv
 /*.html
 /get_paper_info_to_csv_informs.py
+/test
+/pdfs
 
 # 缓存
 __pycache__/

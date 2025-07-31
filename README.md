@@ -42,3 +42,13 @@ uv run rename.py
 ```python
 uv run filter.py
 ```
+
+**其他功能**
+
+EBSCOpdf下载，指定EBSCO元数据csv文件夹，指定输出文件夹，配置edge访问权限即可
+
+环境变量需要有msedgedriver.exe所在位置
+
+```python
+uv run EBSCO_getpdf.py
+```

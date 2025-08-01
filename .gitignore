@@ -6,6 +6,10 @@ others/
 /get_paper_info_to_csv_informs.py
 /test
 /pdfs
+/informs_pdfs
+/EBSCO_pdfs
+/ISR
+/test_ISR
 
 # 缓存
 __pycache__/
